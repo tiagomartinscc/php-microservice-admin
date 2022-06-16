@@ -34,6 +34,15 @@ class CreateCategoryUseCaseUnitTest extends TestCase
         $useCase = new CreateCategoryUseCase($this->mockRepo);
         $response = $useCase->execute($this->mockInput);
 
+        /**
+         * Spies
+         */
+        $this->spy = Mockery::spy(stdClass::class, CategoryRepositoryInterface::class);
+        $this->spy->shouldReceive('insert')->andReturn($this->mockEntity);
+        $useCase = new CreateCategoryUseCase($this->spy);
+        $response = $useCase->execute($this->mockInput);
+        $this->spy->shouldHaveReceived('insert');
+
         Mockery::close();
 
         $this->assertInstanceOf(CategoryCreateOutputDto::class, $response);
